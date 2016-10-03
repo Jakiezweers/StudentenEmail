@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         }
     }
     public boolean emptyCheck(){
+        //Controle of checkboxes in layout leeg zijn, zo ja, dan geeft die een Toast
         RelativeLayout layoutMain = (RelativeLayout) findViewById(R.id.layoutMain);
         for( int i = 0; i < layoutMain.getChildCount(); i++ ){
             if(layoutMain.getChildAt(i) instanceof EditText)
