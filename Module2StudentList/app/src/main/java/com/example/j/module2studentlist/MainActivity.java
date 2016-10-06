@@ -60,15 +60,20 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         });
 
         //Controleert of bundle leeg is, zoniet vult die email in uit lijstselectie
-        Bundle b = this.getIntent().getExtras();
-        if(b != null)
-        {
-            for(Student std : Student.getStudentList()){
-                if(std.getStudentnr().equals(b.getString("StudNr"))){
-                    edtEmail.setText(std.getEmail());
+        try{
+            Bundle b = this.getIntent().getExtras();
+            if(b != null)
+            {
+                for(Student std : Student.getStudentList()){
+                    if(std.getStudentnr().equals(b.getString("StudNr"))){
+                        edtEmail.setText(std.getEmail());
+                    }
                 }
             }
+        } catch (Exception e){
+            Log.e("Error", e.getMessage());
         }
+
     }
     public boolean emptyCheck(){
         //Controle of checkboxes in layout leeg zijn, zo ja, dan geeft die een Toast
