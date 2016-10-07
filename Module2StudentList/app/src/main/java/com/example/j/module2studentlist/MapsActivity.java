@@ -1,5 +1,6 @@
 package com.example.j.module2studentlist;
 
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.support.v4.app.FragmentActivity;
@@ -11,15 +12,18 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.IOException;
 import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    String Adres, Naam;
+    String Adres, Naam, studNr;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,10 +39,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if(b != null)
             {
                 for(Student std : Student.getStudentList()){
-                    if(std.getStudentnr().equals(b.getString("StudNR"))){
+                    if(std.getStudentnr().equals(b.getString("StudNr"))){
                         Adres = std.getPostcode()+", "+std.getPlaats()+", Netherlands";
                         Naam = std.getNaam()+ " " + std.getAchternaam() + " " + std.getTussenvoegsel();
-
+                        studNr = std.getStudentnr();
                     }
                 }
             }
@@ -60,52 +64,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        Geocoder gc = new Geocoder(getApplicationContext());
-        Address address = null;
-        List<Address> addressList = null;
-        try {
-            if (!TextUtils.isEmpty(Adres)) {
-                addressList = gc.getFromLocationName(Adres, 5);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        // Add a marker in Sydney and move the camera
-        LatLng City = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(City).title(Naam));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(City));
-    }
-
-    public static String geocodeAddress(String addressStr, Geocoder gc) {
-        Address address = null;
-        List<Address> addressList = null;
-        try {
-            if (!TextUtils.isEmpty(addressStr)) {
-                addressList = gc.getFromLocationName(addressStr, 5);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if (null != addressList && addressList.size() > 0) {
-            address = addressList.get(0);
-        }
-        double latitude = 0;
         double longitude = 0;
-        if (null != address && address.hasLatitude()
-                && address.hasLongitude()) {
-            latitude = address.getLatitude();
-            longitude = address.getLongitude();
+        double latitude = 0;
+        Geocoder gc = new Geocoder(getApplicationContext());
+        List<Address> addresses = null;
+        try {
+            addresses = gc.getFromLocationName(Adres, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        return latitude + "|" + longitude;
-//        if (latitude != 0 && longitude != 0)
-//        {
-//
-//            mGoogleMap2.addMarker(new MarkerOptions()
-//                    .position(new LatLng(latitude, longitude)));
-//            mGoogleMap2.moveCamera(CameraUpdateFactory.newLatLngZoom(
-//                    new LatLng(latitude, longitude), 10));
-//        }
+        if(addresses.size() > 0){
+            longitude = addresses.get(0).getLongitude();
+            latitude = addresses.get(0).getLatitude();
+        }
 
+        String name = ("n"+studNr).trim();
+        int id = this.getResources().getIdentifier(name, "drawable", this.getPackageName());
+        if(longitude + latitude != 0) {
+            // Add a marker in Sydney and move the camera
+            LatLng City = new LatLng(latitude, longitude);
+            mMap.addMarker(new MarkerOptions()
+                    .position(City)
+                    .title(Naam)
+                    .snippet(Adres)
+            .icon(BitmapDescriptorFactory.fromResource(id)));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(City, 15));
+
+        }
     }
 }
