@@ -1,5 +1,7 @@
 package com.example.j.module2studentlist;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
@@ -40,7 +42,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             {
                 for(Student std : Student.getStudentList()){
                     if(std.getStudentnr().equals(b.getString("StudNr"))){
-                        Adres = std.getPostcode()+", "+std.getPlaats()+", Netherlands";
+                        Adres = std.getPostcode()+", "+std.getPlaats()+", Nederland";
                         Naam = std.getNaam()+ " " + std.getAchternaam() + " " + std.getTussenvoegsel();
                         studNr = std.getStudentnr();
                     }
@@ -81,6 +83,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         String name = ("n"+studNr).trim();
         int id = this.getResources().getIdentifier(name, "drawable", this.getPackageName());
+        Bitmap icon = BitmapFactory.decodeResource(getResources(), id);
+        icon = Bitmap.createScaledBitmap(icon, 200, 240, false);
         if(longitude + latitude != 0) {
             // Add a marker in Sydney and move the camera
             LatLng City = new LatLng(latitude, longitude);
@@ -88,7 +92,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     .position(City)
                     .title(Naam)
                     .snippet(Adres)
-            .icon(BitmapDescriptorFactory.fromResource(id)));
+                    .icon(BitmapDescriptorFactory.fromBitmap(icon))).showInfoWindow();
+            //.icon(BitmapDescriptorFactory.fromResource(id)));
+
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(City, 15));
 
         }

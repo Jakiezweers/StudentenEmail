@@ -2,6 +2,7 @@ package com.example.j.module2studentlist;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,8 +27,14 @@ public class studentAdapter extends ArrayAdapter<Student> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item, parent, false);
         }
         com.example.j.module2studentlist.Student std = getItem(position);
+        String naam;
+        if(TextUtils.isEmpty(std.getTussenvoegsel()))
+            naam = std.getNaam() + " " + std.getAchternaam();
+        else
+            naam = std.getNaam() + " " + std.getTussenvoegsel() + " " + std.getAchternaam();
+
         TextView txtNaam = (TextView) convertView.findViewById(R.id.txtNaam);
-        txtNaam.setText(std.getNaam());
+        txtNaam.setText(naam);
 
         TextView txtStudnr = (TextView) convertView.findViewById(R.id.txtStudNr);
         txtStudnr.setText(std.getStudentnr());

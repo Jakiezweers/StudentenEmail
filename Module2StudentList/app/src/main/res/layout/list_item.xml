@@ -24,7 +24,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/ivStudent"
-        android:textSize="25dp"
+        android:textSize="20dp"
         android:layout_marginTop="15dp"
         android:layout_marginLeft="10dp" />
 
